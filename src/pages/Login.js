@@ -4,9 +4,11 @@ import "../index.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { userStore } from "../stores/UserStore";
+
 function Login() {
   const [inputs, setInputs] = useState({});
-
+  const updateName = userStore((state) => state.updateName);
   const navigate = useNavigate();
   const handleChange = (event) => {
     const name = event.target.name;
@@ -18,6 +20,7 @@ function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(inputs);
+    updateName(inputs.username);
     navigate("/home", { replace: true });
   };
 
