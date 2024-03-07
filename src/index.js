@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 import Login from "./pages/Login";
+import Registo from "./pages/Registo";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
@@ -20,6 +21,7 @@ root.render(
         <Route path="/activity" element={<Activity />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/registo" element={<Registo />} />
       </Routes>
     </Router>
   </React.StrictMode>

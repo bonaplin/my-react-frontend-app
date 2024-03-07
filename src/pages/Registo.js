@@ -6,14 +6,15 @@ import { useNavigate } from "react-router-dom";
 
 import { userStore } from "../stores/UserStore";
 
-function Login() {
+function Registo() {
+  const navigate = useNavigate();
+
   const [inputs, setInputs] = useState({
+    username: "",
     email: "",
     password: "",
+    name: "",
   });
-  console.log(inputs);
-  const updateName = userStore((state) => state.updateName);
-  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -24,61 +25,65 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
-      // Send a POST request to the login endpoint
       const response = await fetch(
-        "http://localhost:8080/my_activities_backend/rest/user/login",
+        "http://localhost:8080/my_activities_backend/rest/user/register", // "http://localhost:8080/my_activities_backend/rest/user/login
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(inputs), // inputs should contain the username and password
+          body: JSON.stringify(inputs), // inputs should contain the username and password}
         }
       );
-
       console.log(inputs);
       if (!response.ok) {
-        throw new Error("Login failed. Please try again.");
+        throw new Error("Registo failed. Please try again.");
+      } else if (response.ok) {
+        navigate("/login", { replace: true });
       }
-
-      const text = await response.text();
-
-      try {
-        // Parse the JSON response
-        const data = await response.json();
-
-        // Store the token in local storage
-        localStorage.setItem("token", data.token);
-      } catch (error) {
-        localStorage.setItem("token", text);
-      }
-
-      // Continue with your existing code...
-      updateName(inputs.email);
-      navigate("/home", { replace: true });
     } catch (error) {
-      console.log(error);
-      // Optionally, we can set an error state variable to display the error message
+      console.error("There was an error!", error);
     }
   };
 
   return (
-    <div className="Login" id="profile-outer-container">
-      <div className="page-wrap" id="login-page-wrap">
-        <h1>Login</h1>
+    <div className="Registo" id="registo-outer-container">
+      <div className="page-wrap" id="registo-page-wrap">
+        <h1>Registo</h1>
 
         <form onSubmit={handleSubmit}>
           <label>
-            Enter your email address:
+            Enter your username:
             <input
               type="text"
-              name="email"
+              name="username"
               defaultValue={inputs.username || ""}
               onChange={handleChange}
             />
           </label>
-
+          <br />
+          <label>
+            Enter your email address:
+            <input
+              type="email"
+              name="email"
+              defaultValue={inputs.email || ""}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <label>
+            Enter your Name:
+            <input
+              type="name"
+              name="name"
+              defaultValue={inputs.name || ""}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
           <label>
             Enter your password:
             <input
@@ -88,11 +93,12 @@ function Login() {
               onChange={handleChange}
             />
           </label>
-          <input type="submit" value="Login" />
+          <br />
+          <input type="submit" value="Registo" />
         </form>
-        <button onClick={() => navigate("/registo")}>Registo</button>
       </div>
     </div>
   );
 }
-export default Login;
+
+export default Registo;
