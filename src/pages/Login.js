@@ -7,9 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { userStore } from "../stores/UserStore";
 
 function Login() {
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+  console.log(inputs);
   const updateName = userStore((state) => state.updateName);
   const navigate = useNavigate();
+
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -17,11 +22,52 @@ function Login() {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   console.log(inputs);
+  //   updateName(inputs.username);
+  //   navigate("/home", { replace: true });
+  // };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(inputs);
-    updateName(inputs.username);
-    navigate("/home", { replace: true });
+    try {
+      // Send a POST request to the login endpoint
+      const response = await fetch(
+        "http://localhost:8080/my_activities_backend/rest/user/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(inputs), // inputs should contain the username and password
+        }
+      );
+
+      console.log(inputs);
+      if (!response.ok) {
+        throw new Error("Login failed. Please try again.");
+      }
+
+      const text = await response.text();
+
+      try {
+        // Parse the JSON response
+        const data = await response.json();
+
+        // Store the token in local storage
+        localStorage.setItem("token", data.token);
+      } catch (error) {
+        localStorage.setItem("token", text);
+      }
+
+      // Continue with your existing code...
+      updateName(inputs.email);
+      navigate("/home", { replace: true });
+    } catch (error) {
+      console.log(error);
+      // Optionally, we can set an error state variable to display the error message
+    }
   };
 
   return (
@@ -31,10 +77,10 @@ function Login() {
 
         <form onSubmit={handleSubmit}>
           <label>
-            Enter your username:
+            Enter your email address:
             <input
               type="text"
-              name="username"
+              name="email"
               defaultValue={inputs.username || ""}
               onChange={handleChange}
             />

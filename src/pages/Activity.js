@@ -8,7 +8,6 @@ function Activity() {
   const username = userStore((state) => state.username);
   const [inputs, setInputs] = useState({});
   const [activities, setActivities] = useState([]);
-  const token = "JY02DdIPU19ncHugY6BidY5wKFeSDtKv";
   const [newactivity, setNewActivity] = useState({});
 
   useEffect(() => {
@@ -18,7 +17,10 @@ function Activity() {
           "http://localhost:8080/my_activities_backend/rest/activity/all",
           {
             method: "GET",
-            headers: { Accept: "application/json", token: token },
+            headers: {
+              Accept: "application/json",
+              token: localStorage.getItem("token"),
+            },
           }
         );
         if (!response.ok) {
@@ -49,7 +51,7 @@ function Activity() {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        token: token,
+        token: localStorage.getItem("token"),
       },
       body: JSON.stringify(inputs),
     }).then(function (response) {
