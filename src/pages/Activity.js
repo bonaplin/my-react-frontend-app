@@ -3,13 +3,15 @@ import Sidebar from "../components/navbar/Sidebar";
 import { useState, useEffect } from "react";
 import "../pages/activity.css";
 import { userStore } from "../stores/UserStore";
+import MediaType from "../components/media/MediaType";
 
 function Activity() {
+  const mediatype = userStore((state) => state.mediatype);
   const username = userStore((state) => state.username);
   const [inputs, setInputs] = useState({});
   const [activities, setActivities] = useState([]);
   const [newactivity, setNewActivity] = useState({});
-
+  MediaType();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -62,6 +64,7 @@ function Activity() {
       }
     });
   };
+
   return (
     <div className="Activity" id="activity-outer-container">
       <Sidebar
@@ -77,8 +80,9 @@ function Activity() {
         <h3>Add a New Activity</h3>
         <div>
           <form onSubmit={handleSubmit}>
+            {" "}
             <label>
-              Activity Title:
+              Activity Title:{" "}
               <input
                 type="text"
                 name="title"
@@ -86,6 +90,7 @@ function Activity() {
                 onChange={handleChange}
               />
             </label>
+            {mediatype.isTabletOrMobile && <br />}{" "}
             <label>
               Activity Description:
               <input
@@ -95,6 +100,7 @@ function Activity() {
                 onChange={handleChange}
               />
             </label>
+            {mediatype.isTabletOrMobile && <br />}
             <input type="submit" value="Add" />
           </form>
         </div>
@@ -103,17 +109,19 @@ function Activity() {
           <table className="tables" cellPadding="0" cellSpacing="0">
             <thead>
               <tr>
-                <th>ID</th>
+                {mediatype.isDesktopOrLaptop && <th>ID</th>}
                 <th>Title</th>
-                <th>Description</th>
+                {mediatype.isDesktopOrLaptop && <th>Description</th>}
               </tr>
             </thead>
             <tbody>
               {activities.map((activity) => (
                 <tr key={activity.id}>
-                  <td>{activity.id}</td>
+                  {mediatype.isDesktopOrLaptop && <td>{activity.id}</td>}
                   <td>{activity.title}</td>
-                  <td>{activity.description}</td>
+                  {mediatype.isDesktopOrLaptop && (
+                    <td>{activity.description}</td>
+                  )}
                 </tr>
               ))}
             </tbody>
